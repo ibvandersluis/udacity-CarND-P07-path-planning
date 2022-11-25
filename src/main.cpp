@@ -8,7 +8,7 @@
 #include "Eigen/Core"
 #include "Eigen/QR"
 #include "nlohmann/json.hpp"
-#include "path_planning/helpers.h"
+#include "path_planning/helpers.hpp"
 
 // for convenience
 using nlohmann::json;
