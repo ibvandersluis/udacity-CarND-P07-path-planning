@@ -5,10 +5,10 @@
 #include <string>
 #include <vector>
 
-#include "Eigen-3.3/Eigen/Core"
-#include "Eigen-3.3/Eigen/QR"
-#include "helpers.h"
-#include "json.hpp"
+#include "Eigen/Core"
+#include "Eigen/QR"
+#include "nlohmann/json.hpp"
+#include "path_planning/helpers.h"
 
 // for convenience
 using nlohmann::json;
