@@ -8,7 +8,9 @@
 #include "Eigen/Core"
 #include "Eigen/QR"
 #include "nlohmann/json.hpp"
-#include "path_planning/helpers.hpp"
+#include "path_planning/path_planning.hpp"
+#include "udacity/math.hpp"
+#include "udacity/uws.hpp"
 
 // for convenience
 using nlohmann::json;
@@ -60,7 +62,7 @@ int main()
       // The 4 signifies a websocket message
       // The 2 signifies a websocket event
       if (length && length > 2 && data[0] == '4' && data[1] == '2') {
-        auto s = has_data(data);
+        auto s = udacity::uws::has_data(data);
 
         if (s != "") {
           auto j = json::parse(s);
@@ -98,8 +100,8 @@ int main()
 
             double dist_inc = 0.5;
             for (int i = 0; i < 50; ++i) {
-              next_x_vals.push_back(car_x + (dist_inc * i) * cos(deg2rad(car_yaw)));
-              next_y_vals.push_back(car_y + (dist_inc * i) * sin(deg2rad(car_yaw)));
+              next_x_vals.push_back(car_x + (dist_inc * i) * cos(udacity::math::deg2rad(car_yaw)));
+              next_y_vals.push_back(car_y + (dist_inc * i) * sin(udacity::math::deg2rad(car_yaw)));
             }
 
             // END-TODO
