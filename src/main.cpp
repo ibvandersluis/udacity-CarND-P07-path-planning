@@ -71,11 +71,11 @@ int main()
             // j[1] is the data JSON object
 
             // Main car's localization Data
-            // double car_x = j[1]["x"];
-            // double car_y = j[1]["y"];
+            double car_x = j[1]["x"];
+            double car_y = j[1]["y"];
             // double car_s = j[1]["s"];
             // double car_d = j[1]["d"];
-            // double car_yaw = j[1]["yaw"];
+            double car_yaw = j[1]["yaw"];
             // double car_speed = j[1]["speed"];
 
             // Previous path data given to the Planner
@@ -94,10 +94,15 @@ int main()
             vector<double> next_x_vals;
             vector<double> next_y_vals;
 
-            /**
-           * TODO: define a path made up of (x,y) points that the car will visit
-           *   sequentially every .02 seconds
-          */
+            // TODO: define x,y points that the car will visit sequentially every .02 seconds
+
+            double dist_inc = 0.5;
+            for (int i = 0; i < 50; ++i) {
+              next_x_vals.push_back(car_x + (dist_inc * i) * cos(deg2rad(car_yaw)));
+              next_y_vals.push_back(car_y + (dist_inc * i) * sin(deg2rad(car_yaw)));
+            }
+
+            // END-TODO
 
             msgJson["next_x"] = next_x_vals;
             msgJson["next_y"] = next_y_vals;
