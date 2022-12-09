@@ -25,6 +25,7 @@ Another thorough description. TODO
 - make >= 4.1
 - gcc/g++ >= 5.4
 - uWebSockets
+- [nlohmann-json](https://github.com/nlohmann/json)
 - [Eigen](https://eigen.tuxfamily.org/index.php)
 
 To install uWebSockets, follow these instructions:
@@ -40,6 +41,36 @@ sudo make install
 cd ../..
 sudo ln -s /usr/lib64/libuWS.so /usr/lib/libuWS.so
 sudo rm -r uWebSockets
+```
+
+To install nlohmann-json, you have serveral options. You can:
+
+1. Install using a package manager (easiest)
+
+For Ubuntu:
+
+```bash
+sudo apt install nlohmann-json3-dev # use nlohmann-json-dev for Ubuntu 18.04
+```
+
+For Fedora:
+
+```bash
+sudo dnf install json-devel
+```
+
+For MacOS:
+```bash
+brew install nlohmann-json
+```
+
+2. Download manually
+
+```bash
+wget https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz
+tar -xvf json.tar.xz
+sudo cp -r json/include/nlohmann /usr/include/
+rm -rf json json.tar.xz
 ```
 
 ## Build instructions
