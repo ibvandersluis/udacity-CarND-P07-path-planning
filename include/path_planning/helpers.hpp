@@ -6,21 +6,17 @@
 #include <string>
 #include <vector>
 
-// for convenience
-using std::string;
-using std::vector;
-
 // Checks if the SocketIO event has JSON data.
-// If there is data the JSON object in string format will be returned,
-//   else the empty string "" will be returned.
-string hasData(string s)
+// If there is data the JSON object in std::string format will be returned,
+//   else the empty std::string "" will be returned.
+std::string has_data(std::string s)
 {
   auto found_null = s.find("null");
   auto b1 = s.find_first_of("[");
   auto b2 = s.find_first_of("}");
-  if (found_null != string::npos) {
+  if (found_null != std::string::npos) {
     return "";
-  } else if (b1 != string::npos && b2 != string::npos) {
+  } else if (b1 != std::string::npos && b2 != std::string::npos) {
     return s.substr(b1, b2 - b1 + 2);
   }
   return "";
@@ -43,11 +39,11 @@ double distance(double x1, double y1, double x2, double y2)
 }
 
 // Calculate closest waypoint to current x, y position
-int ClosestWaypoint(
-  double x, double y, const vector<double> & maps_x, const vector<double> & maps_y)
+int get_closest_waypoint(
+  double x, double y, const std::vector<double> & maps_x, const std::vector<double> & maps_y)
 {
   double closestLen = 100000;  //large number
-  int closestWaypoint = 0;
+  int closest_waypoint = 0;
 
   for (size_t i = 0; i < maps_x.size(); ++i) {
     double map_x = maps_x[i];
@@ -55,21 +51,22 @@ int ClosestWaypoint(
     double dist = distance(x, y, map_x, map_y);
     if (dist < closestLen) {
       closestLen = dist;
-      closestWaypoint = i;
+      closest_waypoint = i;
     }
   }
 
-  return closestWaypoint;
+  return closest_waypoint;
 }
 
 // Returns next waypoint of the closest waypoint
-int NextWaypoint(
-  double x, double y, double theta, const vector<double> & maps_x, const vector<double> & maps_y)
+int get_next_waypoint(
+  double x, double y, double theta, const std::vector<double> & maps_x,
+  const std::vector<double> & maps_y)
 {
-  size_t closestWaypoint = ClosestWaypoint(x, y, maps_x, maps_y);
+  size_t closest_waypoint = get_closest_waypoint(x, y, maps_x, maps_y);
 
-  double map_x = maps_x[closestWaypoint];
-  double map_y = maps_y[closestWaypoint];
+  double map_x = maps_x[closest_waypoint];
+  double map_y = maps_y[closest_waypoint];
 
   double heading = atan2((map_y - y), (map_x - x));
 
@@ -77,20 +74,21 @@ int NextWaypoint(
   angle = std::min(2 * pi() - angle, angle);
 
   if (angle > pi() / 2) {
-    ++closestWaypoint;
-    if (closestWaypoint == maps_x.size()) {
-      closestWaypoint = 0;
+    ++closest_waypoint;
+    if (closest_waypoint == maps_x.size()) {
+      closest_waypoint = 0;
     }
   }
 
-  return closestWaypoint;
+  return closest_waypoint;
 }
 
 // Transform from Cartesian x,y coordinates to Frenet s,d coordinates
-vector<double> getFrenet(
-  double x, double y, double theta, const vector<double> & maps_x, const vector<double> & maps_y)
+std::vector<double> get_frenet(
+  double x, double y, double theta, const std::vector<double> & maps_x,
+  const std::vector<double> & maps_y)
 {
-  int next_wp = NextWaypoint(x, y, theta, maps_x, maps_y);
+  int next_wp = get_next_waypoint(x, y, theta, maps_x, maps_y);
 
   int prev_wp;
   prev_wp = next_wp - 1;
@@ -132,9 +130,9 @@ vector<double> getFrenet(
 }
 
 // Transform from Frenet s,d coordinates to Cartesian x,y
-vector<double> getXY(
-  double s, double d, const vector<double> & maps_s, const vector<double> & maps_x,
-  const vector<double> & maps_y)
+std::vector<double> get_xy(
+  double s, double d, const std::vector<double> & maps_s, const std::vector<double> & maps_x,
+  const std::vector<double> & maps_y)
 {
   int prev_wp = -1;
 
