@@ -58,7 +58,7 @@ make
 
 ## Run
 
-To run this project as intended, you will need the [Term 2 Udacity Simulator](https://github.com/udacity/self-driving-car-sim/releases/).
+To run this project as intended, you will need the [Term 3 Udacity Simulator](https://github.com/udacity/self-driving-car-sim/releases/tag/T3_v1.2).
 
 1. Run the particle filter
 ```console
