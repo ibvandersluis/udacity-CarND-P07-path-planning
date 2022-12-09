@@ -49,7 +49,7 @@ int ClosestWaypoint(
   double closestLen = 100000;  //large number
   int closestWaypoint = 0;
 
-  for (int i = 0; i < maps_x.size(); ++i) {
+  for (size_t i = 0; i < maps_x.size(); ++i) {
     double map_x = maps_x[i];
     double map_y = maps_y[i];
     double dist = distance(x, y, map_x, map_y);
@@ -66,7 +66,7 @@ int ClosestWaypoint(
 int NextWaypoint(
   double x, double y, double theta, const vector<double> & maps_x, const vector<double> & maps_y)
 {
-  int closestWaypoint = ClosestWaypoint(x, y, maps_x, maps_y);
+  size_t closestWaypoint = ClosestWaypoint(x, y, maps_x, maps_y);
 
   double map_x = maps_x[closestWaypoint];
   double map_y = maps_y[closestWaypoint];
