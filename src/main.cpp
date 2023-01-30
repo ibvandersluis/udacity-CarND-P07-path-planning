@@ -73,13 +73,17 @@ int main()
           if (event == "telemetry") {
             // j[1] is the data JSON object
 
+            std::cout << 1 << std::endl;
+
             // Main car's localization Data
-            // double car_x = j[1]["x"];
-            // double car_y = j[1]["y"];
+            double car_x = j[1]["x"];
+            double car_y = j[1]["y"];
             double car_s = j[1]["s"];
-            double car_d = j[1]["d"];
-            // double car_yaw = j[1]["yaw"];
+            // double car_d = j[1]["d"];
+            double car_yaw = j[1]["yaw"];
             // double car_speed = j[1]["speed"];
+
+            std::cout << 2 << std::endl;
 
             // Previous path data given to the Planner
             auto previous_path_x = j[1]["previous_path_x"];
@@ -92,25 +96,160 @@ int main()
             //   of the road.
             auto sensor_fusion = j[1]["sensor_fusion"];
 
+            std::cout << 3 << std::endl;
+
             json msgJson;
+
+            // TODO: define x,y points that the car will visit sequentially every .02 seconds
+            auto target_lane = 1;
+            auto target_speed_mph = 49.5;
+            auto prev_size = previous_path_x.size();
+
+            std::cout << 4 << std::endl;
+
+            // auto target_speed_mps = udacity::math::mph_to_mps(target_speed_mph);
+            // auto dist_inc = path_planning::mps_to_step_dist(target_speed_mps);
+
+            vector<double> wide_points_x;
+            vector<double> wide_points_y;
+
+            double ref_x;
+            double ref_y;
+            double ref_yaw;
+
+            if (prev_size < 2) {
+              std::cout << "5a" << std::endl;
+
+              // Define reference as the car's current state
+              ref_x = car_x;
+              ref_y = car_y;
+              ref_yaw = udacity::math::deg2rad(car_yaw);
+
+              // Add two points going behind the vehicle
+              auto prev_car_x = car_x - cos(car_yaw);
+              auto prev_car_y = car_y - sin(car_yaw);
+
+              wide_points_x.push_back(prev_car_x);
+              wide_points_x.push_back(car_x);
+
+              wide_points_y.push_back(prev_car_y);
+              wide_points_y.push_back(car_y);
+            } else {
+              std::cout << "5b" << std::endl;
+
+              // Define reference as the last point in the previous path
+              ref_x = previous_path_x[prev_size - 1];
+              ref_y = previous_path_y[prev_size - 1];
+
+              // Define second-to-last point in previous path
+              double ref_x_prev = previous_path_x[prev_size - 2];
+              double ref_y_prev = previous_path_y[prev_size - 2];
+
+              // TODO: Print previous paths and inspect data
+
+              // Calculate angle between the two points
+              ref_yaw = atan2(ref_y - ref_y_prev, ref_x - ref_x_prev);
+
+              // Add last two points from previous path
+              wide_points_x.push_back(ref_x_prev);
+              wide_points_x.push_back(ref_x);
+
+              wide_points_y.push_back(ref_y_prev);
+              wide_points_y.push_back(ref_y);
+            }
+
+            std::cout << 6 << std::endl;
+
+            // In Frenet, add evenly spaces (30m) coordinates ahead of reference
+            for (int i = 1; i <= 3; ++i) {
+              auto next_wp = path_planning::get_xy(
+                car_s + 30 * i, 2 + 4 * target_lane, map_waypoints_s, map_waypoints_x,
+                map_waypoints_y);
+
+              wide_points_x.push_back(next_wp[0]);
+              wide_points_y.push_back(next_wp[1]);
+            }
+
+            std::cout << 7 << std::endl;
+
+            // Transform angle from global reference to car reference
+            for (size_t i = 0; i < wide_points_x.size(); ++i) {
+              auto shift_x = wide_points_x[i] - ref_x;
+              auto shift_y = wide_points_y[i] - ref_y;
+
+              wide_points_x[i] = shift_x * cos(0 - ref_yaw) - shift_y * sin(0 - ref_yaw);
+              wide_points_y[i] = shift_x * sin(0 - ref_yaw) + shift_y * cos(0 - ref_yaw);
+            }
+
+            std::cout << 8 << std::endl;
+
+            tk::spline spline;
+
+            for (size_t i = 0; i < wide_points_x.size(); ++i) {
+              std::cout << wide_points_x[i] << std::endl;
+            }
+
+            std::cout << "-----" << std::endl;
+
+            for (size_t i = 0; i < wide_points_x.size(); ++i) {
+              std::cout << wide_points_y[i] << std::endl;
+            }
+
+            spline.set_points(wide_points_x, wide_points_y);
 
             vector<double> next_x_vals;
             vector<double> next_y_vals;
 
-            // TODO: define x,y points that the car will visit sequentially every .02 seconds
-            auto target_speed_mps = udacity::math::mph_to_mps(49.5);
-            auto dist_inc = path_planning::mps_to_step_dist(target_speed_mps);
-
-            for (int i = 0; i < 50; ++i) {
-              auto next_s = car_s + (i + 1) * dist_inc;
-              auto next_d = car_d;
-
-              auto xy_coords = path_planning::get_xy(
-                next_s, next_d, map_waypoints_s, map_waypoints_x, map_waypoints_y);
-
-              next_x_vals.push_back(xy_coords[0]);
-              next_y_vals.push_back(xy_coords[1]);
+            // Start with all previous points
+            for (size_t i = 0; i < previous_path_x.size(); ++i) {
+              next_x_vals.push_back(previous_path_x[i]);
+              next_y_vals.push_back(previous_path_y[i]);
             }
+
+            std::cout << 9 << std::endl;
+
+            // Break up spline into points of appropriate distance
+            auto target_x = 30.0;
+            auto target_y = spline(target_x);
+            auto target_dist = sqrt(target_x * target_x + target_y * target_y);
+
+            auto x_add_on = 0;
+
+            std::cout << 10 << std::endl;
+
+            // Fill in the rest of the points (will always be 50)
+            for (size_t i = 1; i < 50 - previous_path_x.size(); ++i) {
+              auto N = (target_dist / (0.02 * target_speed_mph / 2.24));
+              auto x_point = x_add_on + target_x / N;
+              auto y_point = spline(x_point);
+
+              x_add_on = x_point;
+
+              auto x_ref = x_point;
+              auto y_ref = y_point;
+
+              x_point = x_ref * cos(ref_yaw) - y_ref * sin(ref_yaw);
+              y_point = x_ref * sin(ref_yaw) + y_ref * cos(ref_yaw);
+
+              x_point += ref_x;
+              y_point += ref_y;
+
+              next_x_vals.push_back(x_point);
+              next_y_vals.push_back(y_point);
+            }
+
+            std::cout << 11 << std::endl;
+
+            // for (int i = 0; i < 50; ++i) {
+            //   auto next_s = car_s + (i + 1) * dist_inc;
+            //   auto next_d = car_d;
+
+            //   auto xy_coords = path_planning::get_xy(
+            //     next_s, next_d, map_waypoints_s, map_waypoints_x, map_waypoints_y);
+
+            //   next_x_vals.push_back(xy_coords[0]);
+            //   next_y_vals.push_back(xy_coords[1]);
+            // }
 
             // END-TODO
 
