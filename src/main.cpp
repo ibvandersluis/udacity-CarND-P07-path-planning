@@ -73,11 +73,11 @@ int main()
             // j[1] is the data JSON object
 
             // Main car's localization Data
-            double car_x = j[1]["x"];
-            double car_y = j[1]["y"];
-            // double car_s = j[1]["s"];
-            // double car_d = j[1]["d"];
-            double car_yaw = j[1]["yaw"];
+            // double car_x = j[1]["x"];
+            // double car_y = j[1]["y"];
+            double car_s = j[1]["s"];
+            double car_d = j[1]["d"];
+            // double car_yaw = j[1]["yaw"];
             // double car_speed = j[1]["speed"];
 
             // Previous path data given to the Planner
@@ -100,8 +100,14 @@ int main()
 
             double dist_inc = 0.5;
             for (int i = 0; i < 50; ++i) {
-              next_x_vals.push_back(car_x + (dist_inc * i) * cos(udacity::math::deg2rad(car_yaw)));
-              next_y_vals.push_back(car_y + (dist_inc * i) * sin(udacity::math::deg2rad(car_yaw)));
+              auto next_s = car_s + (i + 1) * dist_inc;
+              auto next_d = car_d;
+
+              auto xy_coords = path_planning::get_xy(
+                next_s, next_d, map_waypoints_s, map_waypoints_x, map_waypoints_y);
+
+              next_x_vals.push_back(xy_coords[0]);
+              next_y_vals.push_back(xy_coords[1]);
             }
 
             // END-TODO
