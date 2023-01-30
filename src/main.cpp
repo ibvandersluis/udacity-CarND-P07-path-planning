@@ -9,6 +9,7 @@
 #include "Eigen/QR"
 #include "nlohmann/json.hpp"
 #include "path_planning/path_planning.hpp"
+#include "spline.h"
 #include "udacity/math.hpp"
 #include "udacity/uws.hpp"
 
