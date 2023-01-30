@@ -97,8 +97,9 @@ int main()
             vector<double> next_y_vals;
 
             // TODO: define x,y points that the car will visit sequentially every .02 seconds
+            auto target_speed_mps = udacity::math::mph_to_mps(49.5);
+            auto dist_inc = path_planning::mps_to_step_dist(target_speed_mps);
 
-            double dist_inc = 0.5;
             for (int i = 0; i < 50; ++i) {
               auto next_s = car_s + (i + 1) * dist_inc;
               auto next_d = car_d;

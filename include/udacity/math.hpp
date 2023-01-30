@@ -19,6 +19,13 @@ double distance(double x1, double y1, double x2, double y2)
   return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
+// Convert miles per hour to meters per second
+double mph_to_mps(double mph)
+{
+  auto mps = mph / 2.237;
+  return mps;
+}
+
 }  // namespace math
 
 }  // namespace udacity

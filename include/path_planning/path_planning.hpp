@@ -129,6 +129,13 @@ std::vector<double> get_xy(
   return {x, y};
 }
 
+// Calculate distance per 20ms timestep (50 Hz)
+double mps_to_step_dist(double mps)
+{
+  auto step_dist = mps / 50;
+  return step_dist;
+}
+
 }  // namespace path_planning
 
 #endif  // PATH_PLANNING__PATH_PLANNING_H
