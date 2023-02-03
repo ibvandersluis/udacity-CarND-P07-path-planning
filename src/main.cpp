@@ -56,8 +56,14 @@ int main()
     map_waypoints_dy.push_back(d_y);
   }
 
+  // Lane 0 = left, Lane 1 = middle, Lane 2 = right
+  auto target_lane = 1;
+  auto speed_limit_mph = 50.0;
+  auto target_speed_mph = speed_limit_mph - 0.5;
+
   h.onMessage(
-    [&map_waypoints_x, &map_waypoints_y, &map_waypoints_s, &map_waypoints_dx, &map_waypoints_dy](
+    [&map_waypoints_x, &map_waypoints_y, &map_waypoints_s, &map_waypoints_dx, &map_waypoints_dy,
+     &target_lane, &target_speed_mph, &speed_limit_mph](
       uWS::WebSocket<uWS::SERVER> ws, char * data, size_t length, uWS::OpCode /*opCode*/) {
       // "42" at the start of the message means there's a websocket message event.
       // The 4 signifies a websocket message
