@@ -91,7 +91,7 @@ int main()
             auto previous_path_x = j[1]["previous_path_x"];
             auto previous_path_y = j[1]["previous_path_y"];
             // Previous path's end s and d values
-            // double end_path_s = j[1]["end_path_s"];
+            double end_path_s = j[1]["end_path_s"];
             // double end_path_d = j[1]["end_path_d"];
 
             // Sensor Fusion Data, a list of all other cars on the same side
@@ -103,6 +103,25 @@ int main()
 
             // auto target_speed_mps = udacity::math::mph_to_mps(target_speed_mph);
             // auto dist_inc = path_planning::mps_to_step_dist(target_speed_mps);
+
+            if (prev_size > 0) car_s = end_path_s;
+
+            for (auto & check_car_data : sensor_fusion) {
+              double d = check_car_data[6];
+
+              if (d < (2 + 4 * target_lane + 2) && d > (2 + 4 * target_lane - 2)) {
+                double vx = check_car_data[3];
+                double vy = check_car_data[4];
+                double check_car_s = check_car_data[5];
+                auto check_car_speed = sqrt(vx * vx + vy * vy);
+
+                check_car_s += ((double)prev_size * 0.02 * check_car_speed);
+
+                if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
+                  target_speed_mph = 29.5;
+                }
+              }
+            }
 
             vector<double> wide_points_x;
             vector<double> wide_points_y;
