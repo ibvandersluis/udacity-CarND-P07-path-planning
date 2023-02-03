@@ -98,8 +98,6 @@ int main()
             //   of the road.
             auto sensor_fusion = j[1]["sensor_fusion"];
 
-            json msgJson;
-
             // TODO: define x,y points that the car will visit sequentially every .02 seconds
             auto prev_size = previous_path_x.size();
 
@@ -210,6 +208,8 @@ int main()
             }
 
             // END-TODO
+
+            json msgJson;
 
             msgJson["next_x"] = next_x_vals;
             msgJson["next_y"] = next_y_vals;
