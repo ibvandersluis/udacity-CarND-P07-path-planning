@@ -59,7 +59,7 @@ int main()
   // Lane 0 = left, Lane 1 = middle, Lane 2 = right
   auto target_lane = 1;
   auto speed_limit_mph = 50.0;
-  auto target_speed_mph = speed_limit_mph - 0.5;
+  auto target_speed_mph = 49.5;
 
   h.onMessage(
     [&map_waypoints_x, &map_waypoints_y, &map_waypoints_s, &map_waypoints_dx, &map_waypoints_dy,
@@ -101,8 +101,6 @@ int main()
             json msgJson;
 
             // TODO: define x,y points that the car will visit sequentially every .02 seconds
-            auto target_lane = 1;
-            auto target_speed_mph = 49.5;
             auto prev_size = previous_path_x.size();
 
             // auto target_speed_mps = udacity::math::mph_to_mps(target_speed_mph);
