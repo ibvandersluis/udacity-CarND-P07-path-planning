@@ -120,7 +120,6 @@ int main()
                 check_car_s += ((double)prev_size * 0.02 * check_car_speed);
 
                 if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
-                  std::cout << "Too close!" << std::endl;
                   reduce_speed = true;
                 }
               }
