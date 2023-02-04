@@ -122,7 +122,7 @@ int main()
               auto middle_lane = vector<double>{};
               auto right_lane = vector<double>{};
 
-              if ((check_car_s > start_s) && ((check_car_s - start_s) < 30)) {
+              if ((check_car_s > car_s) && ((check_car_s - start_s) < 30)) {
                 if (d > 0.0 && d < 4.0) {
                   left_lane.push_back(double{check_car_id});
                 } else if (d > 4.0 && d < 8.0) {
