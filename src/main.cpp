@@ -104,8 +104,7 @@ int main()
             // auto target_speed_mps = udacity::math::mph_to_mps(target_speed_mph);
             // auto dist_inc = path_planning::mps_to_step_dist(target_speed_mps);
 
-            if (prev_size > 0) car_s = end_path_s;
-
+            auto start_s = (prev_size > 0) ? end_path_s : car_s;
             auto reduce_speed = false;
 
             for (auto & check_car_data : sensor_fusion) {
@@ -123,7 +122,7 @@ int main()
               auto middle_lane = vector<double>{};
               auto right_lane = vector<double>{};
 
-              if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
+              if ((check_car_s > start_s) && ((check_car_s - start_s) < 30)) {
                 if (d > 0.0 && d < 4.0) {
                   left_lane.push_back(double{check_car_id});
                 } else if (d > 4.0 && d < 8.0) {
@@ -218,7 +217,7 @@ int main()
             // In Frenet, add evenly spaces (30m) coordinates ahead of reference
             for (int i = 1; i <= 3; ++i) {
               auto next_wp = path_planning::get_xy(
-                car_s + 30 * i, 2 + 4 * target_lane, map_waypoints_s, map_waypoints_x,
+                start_s + 30 * i, 2 + 4 * target_lane, map_waypoints_s, map_waypoints_x,
                 map_waypoints_y);
 
               wide_points_x.push_back(next_wp[0]);
