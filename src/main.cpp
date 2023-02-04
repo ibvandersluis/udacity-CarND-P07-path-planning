@@ -107,6 +107,7 @@ int main()
             if (prev_size > 0) car_s = end_path_s;
 
             auto reduce_speed = false;
+            auto change_lanes = false;
 
             for (auto & check_car_data : sensor_fusion) {
               double d = check_car_data[6];
@@ -121,6 +122,7 @@ int main()
 
                 if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
                   reduce_speed = true;
+                  change_lanes = true;
                 }
               }
             }
@@ -129,6 +131,23 @@ int main()
               target_speed_mph -= 0.25;
             } else if (target_speed_mph < (speed_limit_mph - 0.5)) {
               target_speed_mph += 0.25;
+            }
+
+            if (change_lanes) {
+              switch (target_lane) {
+                case 0:
+                  target_lane += 1;
+                  break;
+                case 1:
+                  target_lane -= 1;
+                  break;
+                case 2:
+                  target_lane -= 1;
+                  break;
+                default:
+                  throw std::runtime_error("Not in valid lane");
+                  break;
+              }
             }
 
             vector<double> wide_points_x;
