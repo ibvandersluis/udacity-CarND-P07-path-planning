@@ -110,19 +110,59 @@ int main()
             auto change_lanes = false;
 
             for (auto & check_car_data : sensor_fusion) {
+              double check_car_id = check_car_data[0];
               double d = check_car_data[6];
 
-              if (d < (2 + 4 * target_lane + 2) && d > (2 + 4 * target_lane - 2)) {
-                double vx = check_car_data[3];
-                double vy = check_car_data[4];
-                double check_car_s = check_car_data[5];
-                auto check_car_speed = sqrt(vx * vx + vy * vy);
+              double vx = check_car_data[3];
+              double vy = check_car_data[4];
+              double check_car_s = check_car_data[5];
+              auto check_car_speed = sqrt(vx * vx + vy * vy);
 
-                check_car_s += ((double)prev_size * 0.02 * check_car_speed);
+              check_car_s += ((double)prev_size * 0.02 * check_car_speed);
 
-                if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
-                  reduce_speed = true;
-                  change_lanes = true;
+              auto left_lane = vector<double>{};
+              auto middle_lane = vector<double>{};
+              auto right_lane = vector<double>{};
+
+              if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
+                if (d > 0.0 && d < 4.0) {
+                  left_lane.push_back(double{check_car_id});
+                } else if (d > 4.0 && d < 8.0) {
+                  middle_lane.push_back(double{check_car_id});
+                } else if (d > 8.0 && d < 12.0) {
+                  right_lane.push_back(double{check_car_id});
+                } else {
+                  std::cerr << "Detected vehicle not in valid lane" << std::endl;
+                }
+              }
+
+              vector<vector<double>> nearby_cars = {left_lane, middle_lane, right_lane};
+
+              // Attempt lange change if slower vehicle ahead
+              if (!nearby_cars[target_lane].empty()) {
+                reduce_speed = true;
+
+                switch (target_lane) {
+                  case 0:
+                    // Attempt change to middle lane
+                    if (nearby_cars[target_lane + 1].empty()) target_lane += 1;
+                    break;
+                  case 1:
+                    if (nearby_cars[target_lane - 1].empty()) {
+                      // Attempt change to left lane
+                      target_lane -= 1;
+                    } else if (nearby_cars[target_lane + 1].empty()) {
+                      // If left lane occupied, attempt change to right
+                      target_lane += 1;
+                    }
+                    break;
+                  case 2:
+                    // Attempt change to middle lane
+                    if (nearby_cars[target_lane - 1].empty()) target_lane -= 1;
+                    break;
+                  default:
+                    throw std::runtime_error("Not in valid lane");
+                    break;
                 }
               }
             }
@@ -131,23 +171,6 @@ int main()
               target_speed_mph -= 0.25;
             } else if (target_speed_mph < (speed_limit_mph - 0.5)) {
               target_speed_mph += 0.25;
-            }
-
-            if (change_lanes) {
-              switch (target_lane) {
-                case 0:
-                  target_lane += 1;
-                  break;
-                case 1:
-                  target_lane -= 1;
-                  break;
-                case 2:
-                  target_lane -= 1;
-                  break;
-                default:
-                  throw std::runtime_error("Not in valid lane");
-                  break;
-              }
             }
 
             vector<double> wide_points_x;
