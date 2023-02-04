@@ -59,7 +59,7 @@ int main()
   // Lane 0 = left, Lane 1 = middle, Lane 2 = right
   auto target_lane = 1;
   auto speed_limit_mph = 50.0;
-  auto target_speed_mph = 5.0;
+  auto target_speed_mph = 0.0;
 
   h.onMessage(
     [&map_waypoints_x, &map_waypoints_y, &map_waypoints_s, &map_waypoints_dx, &map_waypoints_dy,
@@ -127,9 +127,9 @@ int main()
             }
 
             if (reduce_speed) {
-              target_speed_mph -= 0.5;
+              target_speed_mph -= 0.25;
             } else if (target_speed_mph < (speed_limit_mph - 0.5)) {
-              target_speed_mph += 0.5;
+              target_speed_mph += 0.25;
             }
 
             vector<double> wide_points_x;
