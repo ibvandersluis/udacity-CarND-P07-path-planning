@@ -107,7 +107,6 @@ int main()
             if (prev_size > 0) car_s = end_path_s;
 
             auto reduce_speed = false;
-            auto change_lanes = false;
 
             for (auto & check_car_data : sensor_fusion) {
               double check_car_id = check_car_data[0];
