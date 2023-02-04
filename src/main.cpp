@@ -59,7 +59,7 @@ int main()
   // Lane 0 = left, Lane 1 = middle, Lane 2 = right
   auto target_lane = 1;
   auto speed_limit_mph = 50.0;
-  auto target_speed_mph = 49.5;
+  auto target_speed_mph = 5.0;
 
   h.onMessage(
     [&map_waypoints_x, &map_waypoints_y, &map_waypoints_s, &map_waypoints_dx, &map_waypoints_dy,
@@ -106,6 +106,8 @@ int main()
 
             if (prev_size > 0) car_s = end_path_s;
 
+            auto reduce_speed = false;
+
             for (auto & check_car_data : sensor_fusion) {
               double d = check_car_data[6];
 
@@ -118,9 +120,16 @@ int main()
                 check_car_s += ((double)prev_size * 0.02 * check_car_speed);
 
                 if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
-                  target_speed_mph = 29.5;
+                  std::cout << "Too close!" << std::endl;
+                  reduce_speed = true;
                 }
               }
+            }
+
+            if (reduce_speed) {
+              target_speed_mph -= 0.5;
+            } else if (target_speed_mph < (speed_limit_mph - 0.5)) {
+              target_speed_mph += 0.5;
             }
 
             vector<double> wide_points_x;
