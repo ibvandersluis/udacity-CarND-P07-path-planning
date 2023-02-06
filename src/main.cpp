@@ -132,8 +132,6 @@ int main()
 
               auto lane_diff = check_car_lane - target_lane;
 
-              // Attempt lange change if slower vehicle ahead
-
               switch (lane_diff) {
                 case 0:
                   // Vehicle is in our lane
@@ -161,6 +159,7 @@ int main()
             }
 
             if (car_ahead) {
+              // Attempt lange change if slower vehicle ahead
               // Prioritize passing on the left and change lanes if safe
               if (target_lane > 0 && !car_left) {
                 target_lane -= 1;
