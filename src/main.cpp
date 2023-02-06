@@ -49,11 +49,11 @@ int main()
     iss >> s;
     iss >> d_x;
     iss >> d_y;
-    map_waypoints_x.push_back(x);
-    map_waypoints_y.push_back(y);
-    map_waypoints_s.push_back(s);
-    map_waypoints_dx.push_back(d_x);
-    map_waypoints_dy.push_back(d_y);
+    map_waypoints_x.emplace_back(x);
+    map_waypoints_y.emplace_back(y);
+    map_waypoints_s.emplace_back(s);
+    map_waypoints_dx.emplace_back(d_x);
+    map_waypoints_dy.emplace_back(d_y);
   }
 
   // Lane 0 = left, Lane 1 = middle, Lane 2 = right
@@ -190,11 +190,11 @@ int main()
               auto prev_car_x = car_x - cos(car_yaw);
               auto prev_car_y = car_y - sin(car_yaw);
 
-              wide_points_x.push_back(prev_car_x);
-              wide_points_x.push_back(car_x);
+              wide_points_x.emplace_back(prev_car_x);
+              wide_points_x.emplace_back(car_x);
 
-              wide_points_y.push_back(prev_car_y);
-              wide_points_y.push_back(car_y);
+              wide_points_y.emplace_back(prev_car_y);
+              wide_points_y.emplace_back(car_y);
             } else {
               // Define reference as the last point in the previous path
               ref_x = previous_path_x[prev_size - 1];
@@ -208,11 +208,11 @@ int main()
               ref_yaw = atan2(ref_y - ref_y_prev, ref_x - ref_x_prev);
 
               // Add last two points from previous path
-              wide_points_x.push_back(ref_x_prev);
-              wide_points_x.push_back(ref_x);
+              wide_points_x.emplace_back(ref_x_prev);
+              wide_points_x.emplace_back(ref_x);
 
-              wide_points_y.push_back(ref_y_prev);
-              wide_points_y.push_back(ref_y);
+              wide_points_y.emplace_back(ref_y_prev);
+              wide_points_y.emplace_back(ref_y);
             }
 
             // In Frenet, add evenly spaced (30m) coordinates ahead of reference
@@ -221,8 +221,8 @@ int main()
                 start_s + 30 * i, 2 + 4 * target_lane, map_waypoints_s, map_waypoints_x,
                 map_waypoints_y);
 
-              wide_points_x.push_back(next_wp[0]);
-              wide_points_y.push_back(next_wp[1]);
+              wide_points_x.emplace_back(next_wp[0]);
+              wide_points_y.emplace_back(next_wp[1]);
             }
 
             // Transform angle from global reference to car reference
@@ -243,8 +243,8 @@ int main()
 
             // Start with all previous points
             for (size_t i = 0; i < previous_path_x.size(); ++i) {
-              next_x_vals.push_back(previous_path_x[i]);
-              next_y_vals.push_back(previous_path_y[i]);
+              next_x_vals.emplace_back(previous_path_x[i]);
+              next_y_vals.emplace_back(previous_path_y[i]);
             }
 
             // Break up spline into points of appropriate distance
@@ -271,8 +271,8 @@ int main()
               x_point += ref_x;
               y_point += ref_y;
 
-              next_x_vals.push_back(x_point);
-              next_y_vals.push_back(y_point);
+              next_x_vals.emplace_back(x_point);
+              next_y_vals.emplace_back(y_point);
             }
 
             json msgJson;
