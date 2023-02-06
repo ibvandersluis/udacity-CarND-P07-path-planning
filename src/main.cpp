@@ -98,7 +98,6 @@ int main()
             //   of the road.
             auto sensor_fusion = j[1]["sensor_fusion"];
 
-            // TODO: define x,y points that the car will visit sequentially every .02 seconds
             auto prev_size = previous_path_x.size();
 
             // auto target_speed_mps = udacity::math::mph_to_mps(target_speed_mph);
@@ -196,7 +195,6 @@ int main()
 
               wide_points_y.push_back(prev_car_y);
               wide_points_y.push_back(car_y);
-
             } else {
               // Define reference as the last point in the previous path
               ref_x = previous_path_x[prev_size - 1];
@@ -217,7 +215,7 @@ int main()
               wide_points_y.push_back(ref_y);
             }
 
-            // In Frenet, add evenly spaces (30m) coordinates ahead of reference
+            // In Frenet, add evenly spaced (30m) coordinates ahead of reference
             for (int i = 1; i <= 3; ++i) {
               auto next_wp = path_planning::get_xy(
                 start_s + 30 * i, 2 + 4 * target_lane, map_waypoints_s, map_waypoints_x,
@@ -276,8 +274,6 @@ int main()
               next_x_vals.push_back(x_point);
               next_y_vals.push_back(y_point);
             }
-
-            // END-TODO
 
             json msgJson;
 
