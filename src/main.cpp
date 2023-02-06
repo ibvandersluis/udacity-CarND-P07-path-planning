@@ -23,20 +23,20 @@ int main()
   uWS::Hub h;
 
   // Load up map values for waypoint's x,y,s and d normalized normal vectors
-  vector<double> map_waypoints_x;
-  vector<double> map_waypoints_y;
-  vector<double> map_waypoints_s;
-  vector<double> map_waypoints_dx;
-  vector<double> map_waypoints_dy;
+  auto map_waypoints_x = vector<double>{};
+  auto map_waypoints_y = vector<double>{};
+  auto map_waypoints_s = vector<double>{};
+  auto map_waypoints_dx = vector<double>{};
+  auto map_waypoints_dy = vector<double>{};
 
   // Waypoint map to read from
-  string map_file_ = "../data/highway_map.csv";
+  auto map_file_ = "../data/highway_map.csv";
   // The max s value before wrapping around the track back to 0
   // double max_s = 6945.554;
 
-  std::ifstream in_map_(map_file_.c_str(), std::ifstream::in);
+  auto in_map_ = std::ifstream{map_file_, std::ifstream::in};
 
-  string line;
+  auto line = string{};
   while (getline(in_map_, line)) {
     std::istringstream iss(line);
     double x;
@@ -57,7 +57,7 @@ int main()
   }
 
   // Lane 0 = left, Lane 1 = middle, Lane 2 = right
-  auto target_lane = 1;
+  auto target_lane = int{1};
   auto speed_limit_mph = 50.0;
   auto target_speed_mph = 0.0;
 
@@ -71,27 +71,27 @@ int main()
       if (length && length > 2 && data[0] == '4' && data[1] == '2') {
         auto s = udacity::uws::has_data(data);
 
-        if (s != "") {
+        if (!s.empty()) {
           auto j = json::parse(s);
 
-          string event = j[0].get<string>();
+          auto event = j[0].get<string>();
 
           if (event == "telemetry") {
             // j[1] is the data JSON object
 
             // Main car's localization Data
-            double car_x = j[1]["x"];
-            double car_y = j[1]["y"];
-            double car_s = j[1]["s"];
+            auto car_x = double{j[1]["x"]};
+            auto car_y = double{j[1]["y"]};
+            auto car_s = double{j[1]["s"]};
             // double car_d = j[1]["d"];
-            double car_yaw = j[1]["yaw"];
+            auto car_yaw = double{j[1]["yaw"]};
             // double car_speed = j[1]["speed"];
 
             // Previous path data given to the Planner
             auto previous_path_x = j[1]["previous_path_x"];
             auto previous_path_y = j[1]["previous_path_y"];
             // Previous path's end s and d values
-            double end_path_s = j[1]["end_path_s"];
+            auto end_path_s = double{j[1]["end_path_s"]};
             // double end_path_d = j[1]["end_path_d"];
 
             // Sensor Fusion Data, a list of all other cars on the same side
@@ -108,12 +108,12 @@ int main()
             auto reduce_speed = false;
 
             for (auto & check_car_data : sensor_fusion) {
-              double check_car_id = check_car_data[0];
-              double d = check_car_data[6];
+              auto check_car_id = double{check_car_data[0]};
+              auto d = double{check_car_data[6]};
 
-              double vx = check_car_data[3];
-              double vy = check_car_data[4];
-              double check_car_s = check_car_data[5];
+              auto vx = double{check_car_data[3]};
+              auto vy = double{check_car_data[4]};
+              auto check_car_s = double{check_car_data[5]};
               auto check_car_speed = sqrt(vx * vx + vy * vy);
 
               check_car_s += ((double)prev_size * 0.02 * check_car_speed);
@@ -171,12 +171,12 @@ int main()
               target_speed_mph += 0.25;
             }
 
-            vector<double> wide_points_x;
-            vector<double> wide_points_y;
+            auto wide_points_x = vector<double>{};
+            auto wide_points_y = vector<double>{};
 
-            double ref_x;
-            double ref_y;
-            double ref_yaw;
+            auto ref_x = double{};
+            auto ref_y = double{};
+            auto ref_yaw = double{};
 
             if (prev_size < 2) {
               // Define reference as the car's current state
@@ -200,8 +200,8 @@ int main()
               ref_y = previous_path_y[prev_size - 1];
 
               // Define second-to-last point in previous path
-              double ref_x_prev = previous_path_x[prev_size - 2];
-              double ref_y_prev = previous_path_y[prev_size - 2];
+              auto ref_x_prev = double{previous_path_x[prev_size - 2]};
+              auto ref_y_prev = double{previous_path_y[prev_size - 2]};
 
               // Calculate angle between the two points
               ref_yaw = atan2(ref_y - ref_y_prev, ref_x - ref_x_prev);
@@ -233,12 +233,12 @@ int main()
               wide_points_y[i] = shift_x * sin(0 - ref_yaw) + shift_y * cos(0 - ref_yaw);
             }
 
-            tk::spline spline;
+            auto spline = tk::spline{};
 
             spline.set_points(wide_points_x, wide_points_y);
 
-            vector<double> next_x_vals;
-            vector<double> next_y_vals;
+            auto next_x_vals = vector<double>{};
+            auto next_y_vals = vector<double>{};
 
             // Start with all previous points
             for (size_t i = 0; i < previous_path_x.size(); ++i) {
@@ -303,7 +303,7 @@ int main()
       std::cout << "Disconnected" << std::endl;
     });
 
-  int port = 4567;
+  auto port = int{4567};
   if (h.listen(port)) {
     std::cout << "Listening to port " << port << std::endl;
   } else {
