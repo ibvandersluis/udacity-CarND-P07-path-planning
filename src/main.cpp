@@ -100,9 +100,6 @@ int main()
 
             auto prev_size = previous_path_x.size();
 
-            // auto target_speed_mps = udacity::math::mph_to_mps(target_speed_mph);
-            // auto dist_inc = path_planning::mps_to_step_dist(target_speed_mps);
-
             auto start_s = (prev_size > 0) ? end_path_s : car_s;
             auto reduce_speed = false;
 
@@ -172,6 +169,9 @@ int main()
             } else if (target_speed_mph < (speed_limit_mph - 0.5)) {
               target_speed_mph += 0.25;
             }
+
+            auto target_speed_mps = udacity::math::mph_to_mps(target_speed_mph);
+            auto dist_inc = path_planning::mps_to_step_dist(target_speed_mps);
 
             auto wide_points_x = vector<double>{};
             auto wide_points_y = vector<double>{};
@@ -256,7 +256,7 @@ int main()
 
             // Fill in the rest of the points (will always be 50)
             for (size_t i = 1; i < 50 - previous_path_x.size(); ++i) {
-              auto N = (target_dist / (0.02 * target_speed_mph / 2.24));
+              auto N = (target_dist / dist_inc);
               auto x_point = x_add_on + target_x / N;
               auto y_point = spline(x_point);
 
