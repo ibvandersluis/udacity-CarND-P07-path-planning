@@ -107,8 +107,11 @@ int main()
             auto start_s = (prev_size > 0) ? end_path_s : car_s;
             auto reduce_speed = false;
 
+            auto car_ahead = false;
+            auto car_left = false;
+            auto car_right = false;
+
             for (auto & check_car_data : sensor_fusion) {
-              auto check_car_id = double{check_car_data[0]};
               auto d = double{check_car_data[6]};
 
               auto vx = double{check_car_data[3]};
@@ -117,51 +120,52 @@ int main()
               auto check_car_speed = sqrt(vx * vx + vy * vy);
 
               check_car_s += ((double)prev_size * 0.02 * check_car_speed);
+              auto check_car_lane = int{-1};
 
-              auto left_lane = vector<double>{};
-              auto middle_lane = vector<double>{};
-              auto right_lane = vector<double>{};
-
-              if ((check_car_s > car_s) && ((check_car_s - start_s) < 30)) {
-                if (d > 0.0 && d < 4.0) {
-                  left_lane.push_back(double{check_car_id});
-                } else if (d > 4.0 && d < 8.0) {
-                  middle_lane.push_back(double{check_car_id});
-                } else if (d > 8.0 && d < 12.0) {
-                  right_lane.push_back(double{check_car_id});
-                } else {
-                  std::cerr << "Detected vehicle not in valid lane" << std::endl;
-                }
+              if (d > 0 && d < 4) {
+                check_car_lane = 0;
+              } else if (d > 4 && d < 8) {
+                check_car_lane = 1;
+              } else if (d > 8 && d < 12) {
+                check_car_lane = 2;
               }
 
-              vector<vector<double>> nearby_cars = {left_lane, middle_lane, right_lane};
+              auto lane_diff = check_car_lane - target_lane;
 
               // Attempt lange change if slower vehicle ahead
-              if (!nearby_cars[target_lane].empty()) {
-                reduce_speed = true;
 
-                switch (target_lane) {
-                  case 0:
-                    // Attempt change to middle lane
-                    if (nearby_cars[target_lane + 1].empty()) target_lane += 1;
-                    break;
-                  case 1:
-                    if (nearby_cars[target_lane - 1].empty()) {
-                      // Attempt change to left lane
-                      target_lane -= 1;
-                    } else if (nearby_cars[target_lane + 1].empty()) {
-                      // If left lane occupied, attempt change to right
-                      target_lane += 1;
-                    }
-                    break;
-                  case 2:
-                    // Attempt change to middle lane
-                    if (nearby_cars[target_lane - 1].empty()) target_lane -= 1;
-                    break;
-                  default:
-                    throw std::runtime_error("Not in valid lane");
-                    break;
-                }
+              switch (lane_diff) {
+                case 0:
+                  // Vehicle is in our lane
+                  if (check_car_s > start_s && check_car_s - start_s < 30) {
+                    car_ahead = true;
+                    reduce_speed = true;
+                  }
+                  break;
+                case 1:
+                  // Vehicle is in the lane on the right
+                  if (abs(check_car_s - start_s) < 30) {
+                    car_right = true;
+                  }
+                  break;
+                case -1:
+                  // Vehicle is in the lane on our left
+                  if (abs(check_car_s - start_s) < 30) {
+                    car_left = true;
+                  }
+                  break;
+                default:
+                  // Car is not in an adjacent lane
+                  break;
+              }
+            }
+
+            if (car_ahead) {
+              // Prioritize passing on the left and change lanes if safe
+              if (target_lane > 0 && !car_left) {
+                target_lane -= 1;
+              } else if (target_lane < 2 && !car_right) {
+                target_lane += 1;
               }
             }
 
