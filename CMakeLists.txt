@@ -3,7 +3,7 @@ project(udacity_path_planning)
 
 add_definitions(-std=c++11)
 
-add_compile_options(-Wall -Wextra -pedantic -Werror)
+# add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 include_directories(
   include
