@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.5)
 project(udacity_path_planning)
 
 add_definitions(-std=c++11)

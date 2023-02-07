@@ -117,7 +117,7 @@ Using these rules, the ego vehicle will safely complete a circuit of the track.
 
 ## Requirements
 
-- cmake >= 3.10
+- cmake >= 3.5
 - make >= 4.1
 - gcc/g++ >= 5.4
 - [uWebSockets](https://github.com/uWebSockets/uWebSockets) @ `e94b6e1`
