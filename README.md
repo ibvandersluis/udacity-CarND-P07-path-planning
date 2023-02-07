@@ -2,6 +2,26 @@
 
 The seventh project in the Udacity Self-Driving Car Engineer Nanodegree: implementing path planning in C++ successfully implement path planning and navigate a highway driving scenario.
 
+## A Note to the Reviewer
+
+Hello! Sorry for any difficulty building the project.
+I like to reduce the amount of third party code I include in my projects if I know it can be installed locally.
+I've provided descriptions on how to do this below, but depending on your setup that may still not be ideal.
+I noticed the virtual workspace is running on Ubuntu 16.04 (yikes) and did not include package manager instructions for installing dependencies on systems older than Ubuntu 18.04. It can be installed manually, but that likely isn't worth your time just for grading this.
+
+Likely because of the age of the system, the installed version of Eigen in the workspace is behind the one I'm using (3.2.92 vs 3.4.0).
+
+I also add compiler flags that make compilation pedantic about warnings and errors, which I've turned off for now.
+
+I'm resovlging this temporarily for grading by making some changes to make it more friendly to Ubuntu 16:
+  - I included a local copy of nlohmann-json since the workspace doesn't have it installed
+  - I turned off pedantic compiler flags that were causing build errors from the older version of Eigen
+
+I have cloned my repo into the workspace and have successfully built there to make sure it works.
+
+Hopefully that fixes everything.
+If there are any further issues I will submit a screen recording of the vehicle completing a loop of the track.
+
 ## Description
 
 The this project consists of the following components:
