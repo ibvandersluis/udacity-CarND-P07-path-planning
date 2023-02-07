@@ -100,9 +100,9 @@ Using these rules, the ego vehicle will safely complete a circuit of the track.
 - cmake >= 3.10
 - make >= 4.1
 - gcc/g++ >= 5.4
-- uWebSockets
+- [uWebSockets](https://github.com/uWebSockets/uWebSockets) @ `e94b6e1`
 - [nlohmann-json](https://github.com/nlohmann/json)
-- [Eigen](https://eigen.tuxfamily.org/index.php)
+- [Eigen](https://eigen.tuxfamily.org/index.php) >= 3.4
 
 To install uWebSockets, follow these instructions:
 ```
