@@ -262,8 +262,8 @@ int main()
 
               x_add_on = x_point;
 
-              auto x_ref = x_point;
-              auto y_ref = y_point;
+              auto x_ref = double{x_point};
+              auto y_ref = double{y_point};
 
               x_point = x_ref * cos(ref_yaw) - y_ref * sin(ref_yaw);
               y_point = x_ref * sin(ref_yaw) + y_ref * cos(ref_yaw);
