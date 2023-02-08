@@ -3,7 +3,7 @@ project(udacity_path_planning)
 
 add_definitions(-std=c++11)
 
-# add_compile_options(-Wall -Wextra -pedantic -Werror)
+add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 include_directories(
   include
@@ -12,7 +12,6 @@ include_directories(
 
 add_executable(path_planning
   src/main.cpp
-  # src/path_planning.cpp
 )
 
 target_link_libraries(path_planning z ssl uv uWS)
