@@ -1,6 +1,6 @@
 # Path Planning in C++
 
-The seventh project in the Udacity Self-Driving Car Engineer Nanodegree: implementing path planning in C++ successfully implement path planning and navigate a highway driving scenario.
+This is the seventh project in the Udacity Self-Driving Car Engineer Nanodegree: implementing path planning in C++ to successfully and safely navigate a highway driving scenario.
 
 ## Description
 
